@@ -1,0 +1,52 @@
+
+# Node.js (Backend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+.env
+.env.*
+!.env.example
+
+dist/
+build/
+coverage/
+
+# Logs
+logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# React (Frontend)
+node_modules/
+build/
+dist/
+
+# Vite / CRA
+.vite/
+.cache/
+
+# PostgreSQL / Database
+
+# Không commit database local
+*.sql
+*.dump
+*.backup
+
+
+# Docker 
+docker-compose.override.yml
+
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# Misc
+*.local
+*.tmp
