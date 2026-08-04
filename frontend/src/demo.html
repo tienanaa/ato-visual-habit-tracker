@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ato. - Dashboard</title>
+    <!-- Nhúng Tailwind CSS qua CDN để xem ngay không cần cài đặt -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Nhúng thư viện icon Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+      /* Hiệu ứng kính mờ cho thẻ Pomodoro */
+      .glass-card {
+        background: linear-gradient(
+          135deg,
+          rgba(253, 164, 175, 0.9),
+          rgba(244, 114, 182, 0.8)
+        );
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 flex h-screen text-slate-800 font-sans">
+    <!-- SIDEBAR (Menu Trái) -->
+    <aside
+      class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between py-6 px-4"
+    >
+      <div>
+        <!-- Logo -->
+        <h1 class="text-3xl font-bold text-slate-800 mb-10 px-2 tracking-tight">
+          Ato.
+        </h1>
+
+        <!-- Menu Navigation -->
+        <nav class="space-y-2">
+          <a
+            href="#"
+            class="flex items-center space-x-3 bg-indigo-50 text-indigo-600 px-4 py-3 rounded-xl font-medium transition"
+          >
+            <i class="ph-fill ph-house text-xl"></i>
+            <span>Dashboard</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center space-x-3 text-slate-500 hover:bg-slate-50 px-4 py-3 rounded-xl font-medium transition"
+          >
+            <i class="ph ph-chart-bar text-xl"></i>
+            <span>Analytics</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center space-x-3 text-slate-500 hover:bg-slate-50 px-4 py-3 rounded-xl font-medium transition"
+          >
+            <i class="ph ph-image text-xl"></i>
+            <span>Gallery</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center space-x-3 text-slate-500 hover:bg-slate-50 px-4 py-3 rounded-xl font-medium transition"
+          >
+            <i class="ph ph-book-open text-xl"></i>
+            <span>Reflection</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center space-x-3 text-slate-500 hover:bg-slate-50 px-4 py-3 rounded-xl font-medium transition"
+          >
+            <i class="ph ph-robot text-xl"></i>
+            <span>AI Mentor</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Menu Đáy -->
+      <div class="space-y-2">
+        <a
+          href="#"
+          class="flex items-center space-x-3 text-slate-500 hover:bg-slate-50 px-4 py-3 rounded-xl font-medium transition"
+        >
+          <i class="ph ph-question text-xl"></i>
+          <span>Help</span>
+        </a>
+        <a
+          href="#"
+          class="flex items-center space-x-3 text-slate-500 hover:bg-slate-50 px-4 py-3 rounded-xl font-medium transition"
+        >
+          <i class="ph ph-gear text-xl"></i>
+          <span>Setting</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT (Khu vực chính) -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+      <!-- HEADER -->
+      <header
+        class="h-20 flex items-center justify-between px-10 border-b border-slate-200 bg-white/50 backdrop-blur-md"
+      >
+        <div
+          class="flex items-center space-x-2 text-sm font-medium text-orange-500 bg-orange-50 px-3 py-1.5 rounded-full"
+        >
+          <i class="ph-fill ph-fire text-lg"></i>
+          <span>7 days streak</span>
+        </div>
+
+        <div class="flex items-center space-x-6">
+          <!-- Search Bar -->
+          <div class="relative">
+            <i
+              class="ph ph-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"
+            ></i>
+            <input
+              type="text"
+              placeholder="Search for something"
+              class="pl-10 pr-4 py-2 bg-slate-100 border-transparent rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 transition"
+            />
+          </div>
+          <!-- Notifications -->
+          <button
+            class="relative p-2 text-slate-400 hover:text-indigo-500 transition"
+          >
+            <i class="ph ph-bell text-2xl"></i>
+            <span
+              class="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full"
+            ></span>
+          </button>
+          <!-- Avatar -->
+          <img
+            src="https://i.pravatar.cc/150?img=47"
+            alt="User Avatar"
+            class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+          />
+        </div>
+      </header>
+
+      <!-- DASHBOARD CONTENT -->
+      <div class="flex-1 p-10 overflow-y-auto">
+        <!-- Calendar Section -->
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-2xl font-bold text-slate-800">Tháng 8</h2>
+          <span
+            class="text-sm font-medium text-slate-500 cursor-pointer hover:text-indigo-500"
+            >Xem theo Tuần</span
+          >
+        </div>
+
+        <div
+          class="flex items-center justify-between bg-white p-2 rounded-2xl shadow-sm border border-slate-100 mb-10"
+        >
+          <button class="p-2 text-slate-400 hover:text-slate-800">
+            <i class="ph ph-caret-left"></i>
+          </button>
+          <div class="flex-1 flex justify-around text-center">
+            <div
+              class="flex flex-col items-center justify-center p-2 rounded-xl text-slate-500 hover:bg-slate-50 cursor-pointer"
+            >
+              <span class="text-xs font-medium uppercase mb-1">Mon</span>
+              <span class="text-lg">3</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center p-2 rounded-xl bg-indigo-500 text-white shadow-md cursor-pointer w-16"
+            >
+              <span class="text-xs font-medium uppercase mb-1">Tue</span>
+              <span class="text-lg font-bold">4</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center p-2 rounded-xl text-slate-500 hover:bg-slate-50 cursor-pointer"
+            >
+              <span class="text-xs font-medium uppercase mb-1">Wed</span>
+              <span class="text-lg">5</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center p-2 rounded-xl text-slate-500 hover:bg-slate-50 cursor-pointer"
+            >
+              <span class="text-xs font-medium uppercase mb-1">Thu</span>
+              <span class="text-lg">6</span>
+            </div>
+            <div
+              class="flex flex-col items-center justify-center p-2 rounded-xl text-slate-500 hover:bg-slate-50 cursor-pointer"
+            >
+              <span class="text-xs font-medium uppercase mb-1">Fri</span>
+              <span class="text-lg">7</span>
+            </div>
+          </div>
+          <button class="p-2 text-slate-400 hover:text-slate-800">
+            <i class="ph ph-caret-right"></i>
+          </button>
+        </div>
+
+        <!-- Main Grid: Habits vs Pomodoro -->
+        <div class="grid grid-cols-3 gap-8">
+          <!-- Left Column: Habits List -->
+          <div class="col-span-2 space-y-6">
+            <div class="flex justify-between items-center">
+              <h3 class="text-lg font-bold text-slate-800">
+                Thói quen hôm nay
+              </h3>
+              <button
+                class="flex items-center space-x-1 text-sm font-medium text-indigo-500 hover:text-indigo-600 transition"
+              >
+                <i class="ph ph-plus-circle text-lg"></i>
+                <span>Thêm thói quen</span>
+              </button>
+            </div>
+
+            <!-- Habit Card 1 -->
+            <div
+              class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition flex items-center space-x-4"
+            >
+              <button
+                class="w-8 h-8 rounded-full border-2 border-slate-300 flex items-center justify-center text-transparent hover:border-green-500 hover:text-green-500 transition"
+              >
+                <i class="ph-bold ph-check text-lg"></i>
+              </button>
+              <div class="flex-1">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="font-bold text-slate-800"
+                    >Tiếng Nhật N3 (Ngữ pháp)</span
+                  >
+                  <span class="text-sm font-medium text-slate-500"
+                    >10/20 bài</span
+                  >
+                </div>
+                <!-- Progress bar -->
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                  <div
+                    class="bg-indigo-500 h-2 rounded-full"
+                    style="width: 50%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Habit Card 2 (Completed) -->
+            <div
+              class="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex items-center space-x-4 opacity-70"
+            >
+              <button
+                class="w-8 h-8 rounded-full bg-green-500 border-2 border-green-500 flex items-center justify-center text-white cursor-default"
+              >
+                <i class="ph-bold ph-check text-lg"></i>
+              </button>
+              <div class="flex-1">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="font-bold text-slate-500 line-through"
+                    >Luyện Code 1 thuật toán</span
+                  >
+                  <span class="text-sm font-medium text-slate-400"
+                    >Hoàn thành</span
+                  >
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-2">
+                  <div
+                    class="bg-green-500 h-2 rounded-full"
+                    style="width: 100%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Pomodoro Widget -->
+          <div class="col-span-1">
+            <div
+              class="glass-card rounded-3xl p-8 text-center text-white shadow-xl h-full flex flex-col justify-center items-center relative overflow-hidden"
+            >
+              <!-- Hiệu ứng vòng sáng mờ nền -->
+              <div
+                class="absolute -top-10 -right-10 w-32 h-32 bg-white opacity-20 rounded-full blur-2xl"
+              ></div>
+
+              <h3 class="text-2xl font-bold mb-1 tracking-wide">Pomodoro</h3>
+              <p
+                class="text-rose-100 text-sm font-medium uppercase tracking-widest mb-6 flex items-center justify-center"
+              >
+                Focus <i class="ph-bold ph-caret-right ml-1"></i>
+              </p>
+
+              <!-- Đồng hồ -->
+              <div
+                class="text-6xl font-black mb-8 drop-shadow-md tracking-tighter"
+              >
+                25:00
+              </div>
+
+              <!-- Nút Bắt đầu -->
+              <button
+                class="bg-white text-rose-500 font-bold text-lg px-10 py-3 rounded-2xl shadow-lg hover:bg-slate-50 hover:scale-105 transition transform duration-200 w-full max-w-[200px]"
+              >
+                Bắt đầu
+              </button>
+
+              <!-- Icon công cụ nhỏ bên dưới -->
+              <div class="flex space-x-6 mt-8 text-rose-100">
+                <button class="hover:text-white transition">
+                  <i class="ph-fill ph-music-notes text-2xl"></i>
+                </button>
+                <button class="hover:text-white transition">
+                  <i class="ph-fill ph-faders text-2xl"></i>
+                </button>
+                <button class="hover:text-white transition">
+                  <i class="ph-fill ph-corners-out text-2xl"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
