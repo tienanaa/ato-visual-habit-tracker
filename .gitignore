@@ -50,3 +50,8 @@ docker-compose.override.yml
 # Misc
 *.local
 *.tmp
+
+# AI setting
+AGENTS.md
+ROADMAP.md
+CODING-RULES.md
