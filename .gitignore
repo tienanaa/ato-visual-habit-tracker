@@ -55,3 +55,4 @@ docker-compose.override.yml
 AGENTS.md
 ROADMAP.md
 CODING-RULES.md
+frontend/layout.md

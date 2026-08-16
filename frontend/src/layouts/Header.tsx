@@ -4,10 +4,11 @@ import { useDemo } from "../contexts/DemoContext";
 
 const PAGE_TITLES: Record<string, string> = {
   "/dashboard":  "Dashboard",
-  "/habits":     "Habits",
-  "/statistics": "Statistics",
-  "/reflection": "Reflection",
+  "/analytics":  "Analytics",
   "/gallery":    "Gallery",
+  "/reflection": "Reflection",
+  "/ai-mentor":  "AI Mentor",
+  "/help":       "Help",
   "/settings":   "Settings",
 };
 

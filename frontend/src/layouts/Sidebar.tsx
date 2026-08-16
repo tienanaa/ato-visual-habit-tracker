@@ -1,23 +1,25 @@
 import {
   House,
-  CheckSquare,
   ChartBar,
-  ArrowsClockwise,
   Image,
+  ArrowsClockwise,
+  Sparkle,
+  Question,
   Gear,
 } from "@phosphor-icons/react";
 import { NavLink } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 
 const mainMenuItems = [
-  { path: "/dashboard", label: "Dashboard", icon: House },
-  { path: "/habits",    label: "Habits",    icon: CheckSquare },
-  { path: "/statistics",label: "Statistics",icon: ChartBar },
+  { path: "/dashboard",  label: "Dashboard",  icon: House },
+  { path: "/analytics",  label: "Analytics",  icon: ChartBar },
+  { path: "/gallery",    label: "Gallery",    icon: Image },
   { path: "/reflection", label: "Reflection", icon: ArrowsClockwise },
-  { path: "/gallery",   label: "Gallery",   icon: Image },
+  { path: "/ai-mentor",  label: "AI Mentor",  icon: Sparkle },
 ];
 
 const bottomMenuItems = [
+  { path: "/help",     label: "Help",     icon: Question },
   { path: "/settings", label: "Settings", icon: Gear },
 ];
 
