@@ -1,36 +1,39 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { DemoProvider } from "./contexts/DemoContext";
 import MainLayout from "./layouts/MainLayout";
 
+import LandingPage    from "./pages/LandingPage";
+import LoginPage      from "./pages/LoginPage";
+import DashboardPage  from "./pages/DashboardPage";
+import HabitsPage     from "./pages/HabitsPage";
+import StatisticsPage from "./pages/StatisticsPage";
+import ReflectionPage from "./pages/ReflectionPage";
+import GalleryPage    from "./pages/GalleryPage";
+import SettingsPage   from "./pages/SettingsPage";
+
 function App() {
-  const [currentTab, setCurrentTab] = useState("dashboard");
-
-  const renderContent = () => {
-    switch (currentTab) {
-      case "dashboard":
-        return <div className="text-slate-500 font-medium">Dashboard content area.</div>;
-      case "analytics":
-        return <div className="text-slate-500 font-medium">Analytics charts and data will show up here.</div>;
-      case "gallery":
-        return <div className="text-slate-500 font-medium">Your uploaded diary images will be shown here.</div>;
-      case "reflection":
-        return <div className="text-slate-500 font-medium">Write and review your daily reflections here.</div>;
-      case "ai-mentor":
-        return <div className="text-slate-500 font-medium">Interact with your AI Kaizen Mentor here.</div>;
-      case "help":
-        return <div className="text-slate-500 font-medium">Help center and usage guides.</div>;
-      case "settings":
-        return <div className="text-slate-500 font-medium">App configurations and profile settings.</div>;
-      default:
-        return <div>Page not found</div>;
-    }
-  };
-
   return (
-    <MainLayout currentTab={currentTab} onTabChange={setCurrentTab} streakCount={5}>
-      {renderContent()}
-    </MainLayout>
+    <BrowserRouter>
+      <DemoProvider>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/"      element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* App routes — wrapped in MainLayout */}
+          <Route path="/dashboard"  element={<MainLayout><DashboardPage /></MainLayout>} />
+          <Route path="/habits"     element={<MainLayout><HabitsPage /></MainLayout>} />
+          <Route path="/statistics" element={<MainLayout><StatisticsPage /></MainLayout>} />
+          <Route path="/reflection" element={<MainLayout><ReflectionPage /></MainLayout>} />
+          <Route path="/gallery"    element={<MainLayout><GalleryPage /></MainLayout>} />
+          <Route path="/settings"   element={<MainLayout><SettingsPage /></MainLayout>} />
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </DemoProvider>
+    </BrowserRouter>
   );
 }
 
 export default App;
-
