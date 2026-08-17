@@ -8,6 +8,23 @@ export async function getHabits(userId: string): Promise<Habit[]> {
   return res.json();
 }
 
+export async function createHabit(
+  userId: string,
+  title: string,
+  colorCode: string
+): Promise<Habit> {
+  const res = await fetch(`${BASE_URL}/habits`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user_id: userId, title, color_code: colorCode }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { error?: string }).error ?? "Failed to create habit");
+  }
+  return res.json();
+}
+
 export async function logHabit(
   habitId: number,
   userId: string,
@@ -22,3 +39,4 @@ export async function logHabit(
   const data = await res.json();
   return data.data;
 }
+

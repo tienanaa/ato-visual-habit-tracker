@@ -1,14 +1,13 @@
 import { Fire } from "@phosphor-icons/react";
 import type { Habit } from "../../types/habit";
 
-// Map color_code from DB → Tailwind classes
 const COLOR_MAP: Record<string, { accent: string; badge: string; text: string }> = {
-  purple: { accent: "bg-purple-500",  badge: "bg-purple-50 text-purple-700 border-purple-200",  text: "text-purple-600" },
-  orange: { accent: "bg-orange-400",  badge: "bg-orange-50 text-orange-700 border-orange-200",  text: "text-orange-600" },
-  blue:   { accent: "bg-blue-500",    badge: "bg-blue-50   text-blue-700   border-blue-200",    text: "text-blue-600"   },
-  teal:   { accent: "bg-teal-500",    badge: "bg-teal-50   text-teal-700   border-teal-200",    text: "text-teal-600"   },
-  red:    { accent: "bg-rose-500",    badge: "bg-rose-50   text-rose-700   border-rose-200",    text: "text-rose-600"   },
-  green:  { accent: "bg-emerald-500", badge: "bg-emerald-50 text-emerald-700 border-emerald-200", text: "text-emerald-600" },
+  purple: { accent: "bg-purple-500", badge: "bg-purple-50 text-purple-700 border-purple-200", text: "text-purple-600" },
+  orange: { accent: "bg-orange-400", badge: "bg-orange-50 text-orange-700 border-orange-200", text: "text-orange-600" },
+  blue: { accent: "bg-blue-500", badge: "bg-blue-50   text-blue-700   border-blue-200", text: "text-blue-600" },
+  teal: { accent: "bg-teal-500", badge: "bg-teal-50   text-teal-700   border-teal-200", text: "text-teal-600" },
+  red: { accent: "bg-rose-500", badge: "bg-rose-50   text-rose-700   border-rose-200", text: "text-rose-600" },
+  green: { accent: "bg-emerald-500", badge: "bg-emerald-50 text-emerald-700 border-emerald-200", text: "text-emerald-600" },
 };
 
 const DEFAULT_COLOR = COLOR_MAP.purple;

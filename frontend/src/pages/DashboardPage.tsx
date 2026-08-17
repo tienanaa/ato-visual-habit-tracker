@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { CheckSquare, SmileySad } from "@phosphor-icons/react";
 import { useDemo } from "../contexts/DemoContext";
-import { getHabits } from "../services/habitService";
+import { getHabits, createHabit } from "../services/habitService";
 import HabitCard from "../components/habits/HabitCard";
+import HabitFormModal from "../components/habits/HabitFormModal";
 import type { Habit } from "../types/habit";
 
 export default function DashboardPage() {
   const { userId } = useDemo();
-  const [habits, setHabits]   = useState<Habit[]>([]);
+  const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,6 +33,10 @@ export default function DashboardPage() {
     return () => { cancelled = true; };
   }, [userId]);
 
+  const handleHabitCreated = (newHabit: Habit) => {
+    setHabits((prev) => [...prev, newHabit]);
+  };
+
   return (
     <div className="max-w-2xl">
       {/* Page header */}
@@ -42,11 +48,12 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Add Habit — placeholder until Task 3.2 */}
+        {/* Add Habit button */}
         <button
-          disabled
-          title="Coming soon"
-          className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-xl opacity-40 cursor-not-allowed select-none"
+          id="add-habit-btn"
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-xl
+            hover:bg-purple-700 active:scale-95 transition-all duration-150 shadow-sm shadow-purple-200"
         >
           <CheckSquare size={16} weight="bold" />
           Add Habit
@@ -78,7 +85,7 @@ export default function DashboardPage() {
         <div className="flex flex-col items-center justify-center py-20 text-center text-slate-400 gap-3">
           <SmileySad size={40} weight="thin" />
           <p className="text-sm font-medium">No habits yet.</p>
-          <p className="text-xs">Add your first habit to get started.</p>
+          <p className="text-xs">Click "Add Habit" to get started.</p>
         </div>
       )}
 
@@ -90,6 +97,16 @@ export default function DashboardPage() {
           ))}
         </div>
       )}
+
+      {/* Create Habit Modal */}
+      {showModal && (
+        <HabitFormModal
+          onClose={() => setShowModal(false)}
+          onCreated={handleHabitCreated}
+          onSubmit={(title, colorCode) => createHabit(userId, title, colorCode)}
+        />
+      )}
     </div>
   );
 }
+

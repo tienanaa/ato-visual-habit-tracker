@@ -60,12 +60,12 @@ export default function LandingPage() {
       {/* Hero*/}
       <section className="flex-1 flex flex-col items-center justify-center text-center px-6 py-24 bg-gradient-to-b from-white via-purple-50/30 to-white">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-purple-50 border border-purple-100 text-purple-700 text-xs font-semibold rounded-full">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-purple-50 border border-purple-100 text-purple-700 text-xs font-semibold rounded-full mb-6">
           <Fire size={13} weight="fill" className="text-orange-500" />
           Kaizen — small steps, big results
         </div>
 
-        <h1 className="text-5xl font-bold !text-slate-900">
+        <h1 className="text-5xl font-bold !text-slate-900 mb-6">
           Build habits that{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-violet-500">
             actually stick
