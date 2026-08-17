@@ -25,6 +25,16 @@ export async function createHabit(
   return res.json();
 }
 
+export async function deleteHabit(habitId: number): Promise<void> {
+  const res = await fetch(`${BASE_URL}/habits/${habitId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { error?: string }).error ?? "Failed to delete habit");
+  }
+}
+
 export async function logHabit(
   habitId: number,
   userId: string,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CheckSquare, SmileySad } from "@phosphor-icons/react";
 import { useDemo } from "../contexts/DemoContext";
-import { getHabits, createHabit } from "../services/habitService";
+import { getHabits, createHabit, deleteHabit } from "../services/habitService";
 import HabitCard from "../components/habits/HabitCard";
 import HabitFormModal from "../components/habits/HabitFormModal";
 import type { Habit } from "../types/habit";
@@ -35,6 +35,11 @@ export default function DashboardPage() {
 
   const handleHabitCreated = (newHabit: Habit) => {
     setHabits((prev) => [...prev, newHabit]);
+  };
+
+  const handleDelete = async (habitId: number) => {
+    await deleteHabit(habitId);
+    setHabits((prev) => prev.filter((h) => h.id !== habitId));
   };
 
   return (
@@ -93,7 +98,7 @@ export default function DashboardPage() {
       {!loading && !error && habits.length > 0 && (
         <div className="flex flex-col gap-3">
           {habits.map((habit) => (
-            <HabitCard key={habit.id} habit={habit} />
+            <HabitCard key={habit.id} habit={habit} onDelete={handleDelete} />
           ))}
         </div>
       )}
