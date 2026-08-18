@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
-import { CheckSquare, SmileySad } from "@phosphor-icons/react";
+import { useEffect, useRef, useState } from "react";
+import { CheckSquare, SmileySad, ArrowUUpLeft } from "@phosphor-icons/react";
 import { useDemo } from "../contexts/DemoContext";
 import { getHabits, createHabit, deleteHabit, updateHabit } from "../services/habitService";
 import HabitCard from "../components/habits/HabitCard";
 import HabitFormModal from "../components/habits/HabitFormModal";
 import type { Habit } from "../types/habit";
+
+interface PendingDelete {
+  habit: Habit;
+  index: number;
+  timerId: ReturnType<typeof setTimeout>;
+}
 
 export default function DashboardPage() {
   const { userId } = useDemo();
@@ -17,6 +23,11 @@ export default function DashboardPage() {
 
   // Edit modal
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
+
+  // Undo delete state
+  const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(null);
+  const pendingDeleteRef = useRef<PendingDelete | null>(null);
+  pendingDeleteRef.current = pendingDelete;
 
   useEffect(() => {
     let cancelled = false;
@@ -35,7 +46,14 @@ export default function DashboardPage() {
         if (!cancelled) setLoading(false);
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      // If leaving the page with a pending delete, execute it immediately
+      if (pendingDeleteRef.current) {
+        clearTimeout(pendingDeleteRef.current.timerId);
+        deleteHabit(pendingDeleteRef.current.habit.id).catch(console.error);
+      }
+    };
   }, [userId]);
 
   const handleHabitCreated = (newHabit: Habit) => {
@@ -48,9 +66,55 @@ export default function DashboardPage() {
     );
   };
 
-  const handleDelete = async (habitId: number) => {
-    await deleteHabit(habitId);
+  const executeDelete = async (habit: Habit) => {
+    try {
+      await deleteHabit(habit.id);
+    } catch {
+      // If server delete fails, restore habit back and display error
+      setHabits((prev) => [...prev, habit]);
+      setError(`Failed to delete "${habit.title}". Please try again.`);
+    }
+  };
+
+  const handleDelete = (habitId: number) => {
+    // If there is already an item pending deletion, commit it now
+    if (pendingDeleteRef.current) {
+      clearTimeout(pendingDeleteRef.current.timerId);
+      executeDelete(pendingDeleteRef.current.habit);
+      setPendingDelete(null);
+    }
+
+    const index = habits.findIndex((h) => h.id === habitId);
+    if (index === -1) return;
+
+    const targetHabit = habits[index];
+
+    // Optimistically remove from UI
     setHabits((prev) => prev.filter((h) => h.id !== habitId));
+
+    // Start 2-second countdown before sending DELETE request to server
+    const timerId = setTimeout(() => {
+      executeDelete(targetHabit);
+      setPendingDelete(null);
+    }, 2000);
+
+    setPendingDelete({ habit: targetHabit, index, timerId });
+  };
+
+  const handleUndo = () => {
+    if (!pendingDelete) return;
+
+    clearTimeout(pendingDelete.timerId);
+
+    // Re-insert habit at its original position
+    setHabits((prev) => {
+      const next = [...prev];
+      const insertAt = Math.min(pendingDelete.index, next.length);
+      next.splice(insertAt, 0, pendingDelete.habit);
+      return next;
+    });
+
+    setPendingDelete(null);
   };
 
   const handleEditClick = (habit: Habit) => {
@@ -58,7 +122,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-2xl relative">
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -101,7 +165,7 @@ export default function DashboardPage() {
       )}
 
       {/* Empty state */}
-      {!loading && !error && habits.length === 0 && (
+      {!loading && !error && habits.length === 0 && !pendingDelete && (
         <div className="flex flex-col items-center justify-center py-20 text-center text-slate-400 gap-3">
           <SmileySad size={40} weight="thin" />
           <p className="text-sm font-medium">No habits yet.</p>
@@ -121,6 +185,21 @@ export default function DashboardPage() {
             />
           ))}
         </div>
+      )}
+
+      {/* Minimal Undo Toast */}
+      {pendingDelete && (
+        <button
+          id="undo-delete-btn"
+          onClick={handleUndo}
+          aria-label="Undo delete habit"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-3.5 py-2
+            bg-[#1e1e1e] text-white rounded-xl shadow-xl border border-white/10 hover:bg-[#282828]
+            active:scale-95 transition-all duration-150 cursor-pointer animate-in fade-in slide-in-from-bottom-3"
+        >
+          <span className="text-sm font-medium text-slate-100">Habit deleted</span>
+          <ArrowUUpLeft size={16} weight="bold" className="text-amber-400" />
+        </button>
       )}
 
       {/* Create Habit Modal */}

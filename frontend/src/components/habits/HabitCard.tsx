@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Fire, Trash, X, Warning, PencilSimple } from "@phosphor-icons/react";
+import { Fire, Trash, PencilSimple } from "@phosphor-icons/react";
 import type { Habit } from "../../types/habit";
 
 const COLOR_MAP: Record<string, { accent: string; badge: string; text: string }> = {
@@ -15,38 +14,15 @@ const DEFAULT_COLOR = COLOR_MAP.purple;
 
 interface HabitCardProps {
   habit: Habit;
-  onDelete?: (habitId: number) => Promise<void>;
+  onDelete?: (habitId: number) => void;
   onEdit?: (habit: Habit) => void;
 }
 
 export default function HabitCard({ habit, onDelete, onEdit }: HabitCardProps) {
   const colors = COLOR_MAP[habit.color_code] ?? DEFAULT_COLOR;
 
-  const [confirming, setConfirming] = useState(false);
-  const [deleting, setDeleting]     = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-
   const handleDeleteClick = () => {
-    setDeleteError(null);
-    setConfirming(true);
-  };
-
-  const handleCancelDelete = () => {
-    setConfirming(false);
-    setDeleteError(null);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!onDelete) return;
-    setDeleting(true);
-    setDeleteError(null);
-    try {
-      await onDelete(habit.id);
-    } catch (err: unknown) {
-      setDeleteError(err instanceof Error ? err.message : "Failed to delete.");
-      setDeleting(false);
-      setConfirming(false);
-    }
+    onDelete?.(habit.id);
   };
 
   return (
@@ -73,70 +49,29 @@ export default function HabitCard({ habit, onDelete, onEdit }: HabitCardProps) {
         )}
 
         {/* Action buttons — visible on hover */}
-        {!confirming && (
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-150">
-            {onEdit && (
-              <button
-                id={`edit-habit-${habit.id}`}
-                onClick={() => onEdit(habit)}
-                aria-label={`Edit ${habit.title}`}
-                className="p-1.5 rounded-lg text-slate-300 hover:text-purple-500 hover:bg-purple-50 transition-all duration-150 shrink-0"
-              >
-                <PencilSimple size={15} weight="bold" />
-              </button>
-            )}
-            {onDelete && (
-              <button
-                id={`delete-habit-${habit.id}`}
-                onClick={handleDeleteClick}
-                aria-label={`Delete ${habit.title}`}
-                className="p-1.5 rounded-lg text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all duration-150 shrink-0"
-              >
-                <Trash size={15} weight="bold" />
-              </button>
-            )}
-          </div>
-        )}
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-150">
+          {onEdit && (
+            <button
+              id={`edit-habit-${habit.id}`}
+              onClick={() => onEdit(habit)}
+              aria-label={`Edit ${habit.title}`}
+              className="p-1.5 rounded-lg text-slate-300 hover:text-purple-500 hover:bg-purple-50 transition-all duration-150 shrink-0"
+            >
+              <PencilSimple size={15} weight="bold" />
+            </button>
+          )}
+          {onDelete && (
+            <button
+              id={`delete-habit-${habit.id}`}
+              onClick={handleDeleteClick}
+              aria-label={`Delete ${habit.title}`}
+              className="p-1.5 rounded-lg text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all duration-150 shrink-0"
+            >
+              <Trash size={15} weight="bold" />
+            </button>
+          )}
+        </div>
       </div>
-
-      {/* Inline confirm bar */}
-      {confirming && (
-        <div className="flex items-center gap-3 px-5 py-2.5 bg-rose-50 border-t border-rose-100 text-sm">
-          <Warning size={15} className="text-rose-500 shrink-0" weight="fill" />
-          <span className="text-rose-700 text-xs font-medium flex-1">Delete this habit?</span>
-          <button
-            id={`cancel-delete-${habit.id}`}
-            onClick={handleCancelDelete}
-            disabled={deleting}
-            className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-600
-              rounded-lg border border-slate-200 hover:bg-white transition-colors disabled:opacity-40"
-          >
-            <X size={11} weight="bold" />
-            Cancel
-          </button>
-          <button
-            id={`confirm-delete-${habit.id}`}
-            onClick={handleConfirmDelete}
-            disabled={deleting}
-            className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white
-              bg-rose-500 hover:bg-rose-600 rounded-lg transition-colors disabled:opacity-60"
-          >
-            {deleting ? (
-              <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              <Trash size={11} weight="bold" />
-            )}
-            {deleting ? "Deleting…" : "Delete"}
-          </button>
-        </div>
-      )}
-
-      {/* Error bar */}
-      {deleteError && (
-        <div className="px-5 py-2 bg-rose-50 border-t border-rose-100 text-xs text-rose-600 font-medium">
-          {deleteError}
-        </div>
-      )}
     </div>
   );
 }
