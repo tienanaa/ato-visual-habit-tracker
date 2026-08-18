@@ -29,7 +29,7 @@ export default function Header() {
       {/* Right Section */}
       <div className="flex items-center gap-4">
         {/* Streak */}
-        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-600 rounded-xl text-sm font-bold shadow-sm select-none">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-600 rounded-lg text-sm font-semibold select-none">
           <Fire size={16} weight="fill" className="text-orange-500" />
           <span>7 days</span>
         </div>

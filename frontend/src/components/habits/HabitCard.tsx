@@ -1,4 +1,4 @@
-import { Fire, Trash, PencilSimple } from "@phosphor-icons/react";
+import { Fire, Trash, PencilSimple, Check } from "@phosphor-icons/react";
 import type { Habit } from "../../types/habit";
 
 const COLOR_MAP: Record<string, { accent: string; badge: string; text: string }> = {
@@ -16,61 +16,91 @@ interface HabitCardProps {
   habit: Habit;
   onDelete?: (habitId: number) => void;
   onEdit?: (habit: Habit) => void;
+  onToggle?: (habitId: number, isCompleted: boolean) => void;
 }
 
-export default function HabitCard({ habit, onDelete, onEdit }: HabitCardProps) {
+export default function HabitCard({ habit, onDelete, onEdit, onToggle }: HabitCardProps) {
   const colors = COLOR_MAP[habit.color_code] ?? DEFAULT_COLOR;
+  const isCompleted = habit.is_completed_today ?? false;
 
   const handleDeleteClick = () => {
     onDelete?.(habit.id);
   };
 
+  const handleToggleClick = () => {
+    onToggle?.(habit.id, !isCompleted);
+  };
+
   return (
-    <div className="flex flex-col bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group overflow-hidden">
-      {/* Main row */}
-      <div className="flex items-center gap-4 px-5 py-4">
-        {/* Color accent strip */}
-        <div className={`w-1 self-stretch rounded-full ${colors.accent} shrink-0`} />
+    <div
+      className={`flex items-center gap-3.5 px-4 py-3.5 sm:px-5 sm:py-4 rounded-xl border transition-colors group ${
+        isCompleted
+          ? "bg-slate-50 border-slate-200"
+          : "bg-white border-slate-200 hover:border-slate-300"
+      }`}
+    >
+      {/* Color accent strip */}
+      <div className={`w-1 self-stretch rounded-full ${colors.accent} shrink-0`} />
 
-        {/* Habit info */}
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-slate-800 text-sm truncate">{habit.title}</p>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Since {new Date(habit.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-          </p>
+      {/* Complete Checkbox Toggle */}
+      <button
+        type="button"
+        id={`toggle-habit-${habit.id}`}
+        onClick={handleToggleClick}
+        aria-label={isCompleted ? `Mark ${habit.title} as incomplete` : `Mark ${habit.title} as complete`}
+        className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors shrink-0 cursor-pointer ${
+          isCompleted
+            ? `${colors.accent} text-white`
+            : "border border-slate-300 bg-white"
+        }`}
+      >
+        {isCompleted && <Check size={13} weight="bold" />}
+      </button>
+
+      {/* Habit info */}
+      <div className="flex-1 min-w-0">
+        <p
+          className={`font-semibold text-sm truncate ${
+            isCompleted ? "line-through text-slate-400" : "text-slate-800"
+          }`}
+        >
+          {habit.title}
+        </p>
+        <p className="text-xs text-slate-400 mt-0.5">
+          Since {new Date(habit.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+        </p>
+      </div>
+
+      {/* Streak badge */}
+      {(habit.current_streak ?? 0) > 0 && (
+        <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-bold shrink-0 ${colors.badge}`}>
+          <Fire size={13} weight="fill" />
+          <span>{habit.current_streak}d</span>
         </div>
+      )}
 
-        {/* Streak badge */}
-        {(habit.current_streak ?? 0) > 0 && (
-          <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-bold shrink-0 ${colors.badge}`}>
-            <Fire size={13} weight="fill" />
-            <span>{habit.current_streak}d</span>
-          </div>
+      {/* Action buttons — visible on hover */}
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {onEdit && (
+          <button
+            id={`edit-habit-${habit.id}`}
+            onClick={() => onEdit(habit)}
+            aria-label={`Edit ${habit.title}`}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors shrink-0"
+          >
+            <PencilSimple size={15} weight="bold" />
+          </button>
         )}
-
-        {/* Action buttons — visible on hover */}
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-150">
-          {onEdit && (
-            <button
-              id={`edit-habit-${habit.id}`}
-              onClick={() => onEdit(habit)}
-              aria-label={`Edit ${habit.title}`}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-purple-500 hover:bg-purple-50 transition-all duration-150 shrink-0"
-            >
-              <PencilSimple size={15} weight="bold" />
-            </button>
-          )}
-          {onDelete && (
-            <button
-              id={`delete-habit-${habit.id}`}
-              onClick={handleDeleteClick}
-              aria-label={`Delete ${habit.title}`}
-              className="p-1.5 rounded-lg text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all duration-150 shrink-0"
-            >
-              <Trash size={15} weight="bold" />
-            </button>
-          )}
-        </div>
+        {onDelete && (
+          <button
+            id={`delete-habit-${habit.id}`}
+            onClick={handleDeleteClick}
+            aria-label={`Delete ${habit.title}`}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors shrink-0"
+          >
+            <Trash size={15} weight="bold" />
+          </button>
+        )}
       </div>
     </div>
   );

@@ -3,12 +3,21 @@ import { query } from "../config/db";
 
 const router = Router();
 
-// GET /:userId — Lấy danh sách habit của user
+// GET /:userId — Lấy danh sách habit của user kèm trạng thái hoàn thành hôm nay
 router.get("/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     const result = await query(
-      "SELECT * FROM habits WHERE user_id = $1 ORDER BY created_at ASC",
+      `SELECT h.*, 
+              EXISTS (
+                SELECT 1 FROM habit_logs hl 
+                WHERE hl.habit_id = h.id 
+                  AND hl.user_id = h.user_id 
+                  AND hl.log_date = CURRENT_DATE
+              ) AS is_completed_today
+       FROM habits h 
+       WHERE h.user_id = $1 
+       ORDER BY h.created_at ASC`,
       [userId],
     );
     res.json(result.rows);
@@ -59,6 +68,31 @@ router.post("/log", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Lỗi server khi lưu log" });
+  }
+});
+
+// DELETE /log — Bỏ tích hoàn thành thói quen
+router.delete("/log", async (req, res) => {
+  try {
+    const { habit_id, user_id, log_date } = req.body;
+
+    if (!habit_id || !user_id || !log_date) {
+      res.status(400).json({ error: "habit_id, user_id và log_date là bắt buộc" });
+      return;
+    }
+
+    const result = await query(
+      "DELETE FROM habit_logs WHERE habit_id = $1 AND user_id = $2 AND log_date = $3 RETURNING *",
+      [habit_id, user_id, log_date],
+    );
+
+    res.json({
+      message: "Đã hủy đánh dấu hoàn thành!",
+      deletedCount: result.rowCount,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Lỗi server khi xóa log hoàn thành" });
   }
 });
 

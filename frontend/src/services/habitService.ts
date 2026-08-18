@@ -67,3 +67,19 @@ export async function logHabit(
   return data.data;
 }
 
+export async function unlogHabit(
+  habitId: number,
+  userId: string,
+  logDate: string
+): Promise<void> {
+  const res = await fetch(`${BASE_URL}/habits/log`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ habit_id: habitId, user_id: userId, log_date: logDate }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { error?: string }).error ?? "Failed to unlog habit");
+  }
+}
+

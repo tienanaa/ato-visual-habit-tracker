@@ -4,6 +4,7 @@ export interface Habit {
   title: string;
   color_code: string;
   current_streak?: number;
+  is_completed_today?: boolean;
   created_at: string;
 }
 
