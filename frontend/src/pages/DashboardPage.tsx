@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CheckSquare, SmileySad } from "@phosphor-icons/react";
 import { useDemo } from "../contexts/DemoContext";
-import { getHabits, createHabit, deleteHabit } from "../services/habitService";
+import { getHabits, createHabit, deleteHabit, updateHabit } from "../services/habitService";
 import HabitCard from "../components/habits/HabitCard";
 import HabitFormModal from "../components/habits/HabitFormModal";
 import type { Habit } from "../types/habit";
@@ -11,7 +11,12 @@ export default function DashboardPage() {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
+
+  // Create modal
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Edit modal
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -37,9 +42,19 @@ export default function DashboardPage() {
     setHabits((prev) => [...prev, newHabit]);
   };
 
+  const handleHabitUpdated = (updatedHabit: Habit) => {
+    setHabits((prev) =>
+      prev.map((h) => (h.id === updatedHabit.id ? updatedHabit : h))
+    );
+  };
+
   const handleDelete = async (habitId: number) => {
     await deleteHabit(habitId);
     setHabits((prev) => prev.filter((h) => h.id !== habitId));
+  };
+
+  const handleEditClick = (habit: Habit) => {
+    setEditingHabit(habit);
   };
 
   return (
@@ -56,7 +71,7 @@ export default function DashboardPage() {
         {/* Add Habit button */}
         <button
           id="add-habit-btn"
-          onClick={() => setShowModal(true)}
+          onClick={() => setShowCreateModal(true)}
           className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-xl
             hover:bg-purple-700 active:scale-95 transition-all duration-150 shadow-sm shadow-purple-200"
         >
@@ -98,20 +113,34 @@ export default function DashboardPage() {
       {!loading && !error && habits.length > 0 && (
         <div className="flex flex-col gap-3">
           {habits.map((habit) => (
-            <HabitCard key={habit.id} habit={habit} onDelete={handleDelete} />
+            <HabitCard
+              key={habit.id}
+              habit={habit}
+              onDelete={handleDelete}
+              onEdit={handleEditClick}
+            />
           ))}
         </div>
       )}
 
       {/* Create Habit Modal */}
-      {showModal && (
+      {showCreateModal && (
         <HabitFormModal
-          onClose={() => setShowModal(false)}
+          onClose={() => setShowCreateModal(false)}
           onCreated={handleHabitCreated}
           onSubmit={(title, colorCode) => createHabit(userId, title, colorCode)}
+        />
+      )}
+
+      {/* Edit Habit Modal */}
+      {editingHabit && (
+        <HabitFormModal
+          initialData={editingHabit}
+          onClose={() => setEditingHabit(null)}
+          onUpdated={handleHabitUpdated}
+          onSubmit={(title, colorCode) => updateHabit(editingHabit.id, title, colorCode)}
         />
       )}
     </div>
   );
 }
-

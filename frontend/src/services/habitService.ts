@@ -35,6 +35,23 @@ export async function deleteHabit(habitId: number): Promise<void> {
   }
 }
 
+export async function updateHabit(
+  habitId: number,
+  title: string,
+  colorCode: string
+): Promise<Habit> {
+  const res = await fetch(`${BASE_URL}/habits/${habitId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, color_code: colorCode }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { error?: string }).error ?? "Failed to update habit");
+  }
+  return res.json();
+}
+
 export async function logHabit(
   habitId: number,
   userId: string,

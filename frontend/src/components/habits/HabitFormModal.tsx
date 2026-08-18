@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Plus } from "@phosphor-icons/react";
+import { X, Plus, PencilSimple } from "@phosphor-icons/react";
 import type { Habit } from "../../types/habit";
 
 // ─── Color options matching HabitCard COLOR_MAP ──────────────────────────────
@@ -19,17 +19,27 @@ const COLOR_OPTIONS: {
 
 interface HabitFormModalProps {
     onClose: () => void;
-    onCreated: (habit: Habit) => void;
+    /** Called when a new habit has been created */
+    onCreated?: (habit: Habit) => void;
+    /** Called when an existing habit has been updated */
+    onUpdated?: (habit: Habit) => void;
+    /** Async function that actually creates/updates — resolves with the saved Habit */
     onSubmit: (title: string, colorCode: string) => Promise<Habit>;
+    /** When provided, the modal opens in Edit mode and pre-fills the form */
+    initialData?: Habit;
 }
 
 export default function HabitFormModal({
     onClose,
     onCreated,
+    onUpdated,
     onSubmit,
+    initialData,
 }: HabitFormModalProps) {
-    const [title, setTitle] = useState("");
-    const [colorCode, setColorCode] = useState("purple");
+    const isEditMode = initialData !== undefined;
+
+    const [title, setTitle] = useState(initialData?.title ?? "");
+    const [colorCode, setColorCode] = useState(initialData?.color_code ?? "purple");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +49,12 @@ export default function HabitFormModal({
     // Auto-focus title on mount
     useEffect(() => {
         inputRef.current?.focus();
-    }, []);
+        // Place cursor at end when editing
+        if (isEditMode && inputRef.current) {
+            const len = inputRef.current.value.length;
+            inputRef.current.setSelectionRange(len, len);
+        }
+    }, [isEditMode]);
 
     // Close on Escape
     useEffect(() => {
@@ -68,8 +83,12 @@ export default function HabitFormModal({
         setError(null);
 
         try {
-            const newHabit = await onSubmit(trimmed, colorCode);
-            onCreated(newHabit);
+            const savedHabit = await onSubmit(trimmed, colorCode);
+            if (isEditMode) {
+                onUpdated?.(savedHabit);
+            } else {
+                onCreated?.(savedHabit);
+            }
             onClose();
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -109,10 +128,12 @@ export default function HabitFormModal({
                             id="habit-modal-title"
                             className="text-lg font-bold text-slate-800 tracking-tight"
                         >
-                            New Habit
+                            {isEditMode ? "Edit Habit" : "New Habit"}
                         </h2>
                         <p className="text-xs text-slate-400 mt-0.5">
-                            Build a routine, one day at a time.
+                            {isEditMode
+                                ? "Update the name or color of your habit."
+                                : "Build a routine, one day at a time."}
                         </p>
                     </div>
                     <button
@@ -214,12 +235,16 @@ export default function HabitFormModal({
                                         className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"
                                         aria-hidden="true"
                                     />
-                                    Creating…
+                                    {isEditMode ? "Saving…" : "Creating…"}
                                 </>
                             ) : (
                                 <>
-                                    <Plus size={14} weight="bold" />
-                                    Create Habit
+                                    {isEditMode ? (
+                                        <PencilSimple size={14} weight="bold" />
+                                    ) : (
+                                        <Plus size={14} weight="bold" />
+                                    )}
+                                    {isEditMode ? "Save Changes" : "Create Habit"}
                                 </>
                             )}
                         </button>

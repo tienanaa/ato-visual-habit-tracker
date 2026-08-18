@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Fire, Trash, X, Warning } from "@phosphor-icons/react";
+import { Fire, Trash, X, Warning, PencilSimple } from "@phosphor-icons/react";
 import type { Habit } from "../../types/habit";
 
 const COLOR_MAP: Record<string, { accent: string; badge: string; text: string }> = {
@@ -16,9 +16,10 @@ const DEFAULT_COLOR = COLOR_MAP.purple;
 interface HabitCardProps {
   habit: Habit;
   onDelete?: (habitId: number) => Promise<void>;
+  onEdit?: (habit: Habit) => void;
 }
 
-export default function HabitCard({ habit, onDelete }: HabitCardProps) {
+export default function HabitCard({ habit, onDelete, onEdit }: HabitCardProps) {
   const colors = COLOR_MAP[habit.color_code] ?? DEFAULT_COLOR;
 
   const [confirming, setConfirming] = useState(false);
@@ -71,17 +72,30 @@ export default function HabitCard({ habit, onDelete }: HabitCardProps) {
           </div>
         )}
 
-        {/* Delete button — visible on hover */}
-        {onDelete && !confirming && (
-          <button
-            id={`delete-habit-${habit.id}`}
-            onClick={handleDeleteClick}
-            aria-label={`Delete ${habit.title}`}
-            className="p-1.5 rounded-lg text-slate-300 hover:text-rose-500 hover:bg-rose-50
-              opacity-0 group-hover:opacity-100 transition-all duration-150 shrink-0"
-          >
-            <Trash size={15} weight="bold" />
-          </button>
+        {/* Action buttons — visible on hover */}
+        {!confirming && (
+          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-150">
+            {onEdit && (
+              <button
+                id={`edit-habit-${habit.id}`}
+                onClick={() => onEdit(habit)}
+                aria-label={`Edit ${habit.title}`}
+                className="p-1.5 rounded-lg text-slate-300 hover:text-purple-500 hover:bg-purple-50 transition-all duration-150 shrink-0"
+              >
+                <PencilSimple size={15} weight="bold" />
+              </button>
+            )}
+            {onDelete && (
+              <button
+                id={`delete-habit-${habit.id}`}
+                onClick={handleDeleteClick}
+                aria-label={`Delete ${habit.title}`}
+                className="p-1.5 rounded-lg text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all duration-150 shrink-0"
+              >
+                <Trash size={15} weight="bold" />
+              </button>
+            )}
+          </div>
         )}
       </div>
 
