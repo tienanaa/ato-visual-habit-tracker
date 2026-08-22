@@ -11,12 +11,20 @@ export async function getHabits(userId: string): Promise<Habit[]> {
 export async function createHabit(
   userId: string,
   title: string,
-  colorCode: string
+  colorCode: string,
+  description?: string | null,
+  reminderTime?: string | null
 ): Promise<Habit> {
   const res = await fetch(`${BASE_URL}/habits`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ user_id: userId, title, color_code: colorCode }),
+    body: JSON.stringify({
+      user_id: userId,
+      title,
+      color_code: colorCode,
+      description: description?.trim() || null,
+      reminder_time: reminderTime || null,
+    }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -38,12 +46,19 @@ export async function deleteHabit(habitId: number): Promise<void> {
 export async function updateHabit(
   habitId: number,
   title: string,
-  colorCode: string
+  colorCode: string,
+  description?: string | null,
+  reminderTime?: string | null
 ): Promise<Habit> {
   const res = await fetch(`${BASE_URL}/habits/${habitId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, color_code: colorCode }),
+    body: JSON.stringify({
+      title,
+      color_code: colorCode,
+      description: description?.trim() || null,
+      reminder_time: reminderTime || null,
+    }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));

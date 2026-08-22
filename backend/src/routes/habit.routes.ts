@@ -30,7 +30,7 @@ router.get("/:userId", async (req, res) => {
 // POST / — Tạo habit mới
 router.post("/", async (req, res) => {
   try {
-    const { user_id, title, color_code } = req.body;
+    const { user_id, title, color_code, description, reminder_time } = req.body;
 
     if (!user_id || !title || typeof title !== "string" || title.trim() === "") {
       res.status(400).json({ error: "user_id và title là bắt buộc" });
@@ -38,10 +38,12 @@ router.post("/", async (req, res) => {
     }
 
     const safeColor = color_code && typeof color_code === "string" ? color_code : "purple";
+    const safeDesc = description && typeof description === "string" && description.trim() !== "" ? description.trim() : null;
+    const safeReminder = reminder_time && typeof reminder_time === "string" && reminder_time.trim() !== "" ? reminder_time.trim() : null;
 
     const result = await query(
-      "INSERT INTO habits (user_id, title, color_code) VALUES ($1, $2, $3) RETURNING *",
-      [user_id, title.trim(), safeColor],
+      "INSERT INTO habits (user_id, title, color_code, description, reminder_time) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [user_id, title.trim(), safeColor, safeDesc, safeReminder],
     );
 
     res.status(201).json(result.rows[0]);
@@ -100,7 +102,7 @@ router.delete("/log", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, color_code } = req.body;
+    const { title, color_code, description, reminder_time } = req.body;
 
     if (!title || typeof title !== "string" || title.trim() === "") {
       res.status(400).json({ error: "title là bắt buộc" });
@@ -108,10 +110,12 @@ router.put("/:id", async (req, res) => {
     }
 
     const safeColor = color_code && typeof color_code === "string" ? color_code : "purple";
+    const safeDesc = description && typeof description === "string" && description.trim() !== "" ? description.trim() : null;
+    const safeReminder = reminder_time && typeof reminder_time === "string" && reminder_time.trim() !== "" ? reminder_time.trim() : null;
 
     const result = await query(
-      "UPDATE habits SET title = $1, color_code = $2 WHERE id = $3 RETURNING *",
-      [title.trim(), safeColor, id],
+      "UPDATE habits SET title = $1, color_code = $2, description = $3, reminder_time = $4 WHERE id = $5 RETURNING *",
+      [title.trim(), safeColor, safeDesc, safeReminder, id],
     );
 
     if (result.rowCount === 0) {

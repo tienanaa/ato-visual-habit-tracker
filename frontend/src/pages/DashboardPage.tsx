@@ -254,7 +254,9 @@ export default function DashboardPage() {
         <HabitFormModal
           onClose={() => setShowCreateModal(false)}
           onCreated={handleHabitCreated}
-          onSubmit={(title, colorCode) => createHabit(userId, title, colorCode)}
+          onSubmit={(title, colorCode, description, reminderTime) =>
+            createHabit(userId, title, colorCode, description, reminderTime)
+          }
         />
       )}
 
@@ -264,7 +266,9 @@ export default function DashboardPage() {
           initialData={editingHabit}
           onClose={() => setEditingHabit(null)}
           onUpdated={handleHabitUpdated}
-          onSubmit={(title, colorCode) => updateHabit(editingHabit.id, title, colorCode)}
+          onSubmit={(title, colorCode, description, reminderTime) =>
+            updateHabit(editingHabit.id, title, colorCode, description, reminderTime)
+          }
         />
       )}
     </div>

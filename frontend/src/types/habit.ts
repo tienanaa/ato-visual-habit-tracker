@@ -3,6 +3,8 @@ export interface Habit {
   user_id: string;
   title: string;
   color_code: string;
+  description?: string | null;
+  reminder_time?: string | null;
   current_streak?: number;
   is_completed_today?: boolean;
   created_at: string;
