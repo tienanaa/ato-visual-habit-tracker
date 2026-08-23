@@ -130,6 +130,7 @@ export default function DashboardPage() {
       } else {
         await unlogHabit(habitId, userId, today);
       }
+      window.dispatchEvent(new CustomEvent("streak-updated"));
     } catch {
       setHabits((prev) =>
         prev.map((h) =>

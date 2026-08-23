@@ -1,6 +1,8 @@
+import { useEffect, useState, useCallback } from "react";
 import { Bell, Fire, SignOut } from "@phosphor-icons/react";
 import { useLocation } from "react-router-dom";
 import { useDemo } from "../contexts/DemoContext";
+import { getUser } from "../services/userService";
 
 const PAGE_TITLES: Record<string, string> = {
   "/dashboard":  "Dashboard",
@@ -14,10 +16,34 @@ const PAGE_TITLES: Record<string, string> = {
 
 export default function Header() {
   const { pathname } = useLocation();
-  const { userName, exitDemo } = useDemo();
+  const { userId, userName, exitDemo } = useDemo();
+  const [streak, setStreak] = useState<number>(0);
 
   const title = PAGE_TITLES[pathname] ?? "";
   const initial = userName.charAt(0).toUpperCase();
+
+  const fetchUserData = useCallback(async () => {
+    if (!userId) return;
+    try {
+      const user = await getUser(userId);
+      setStreak(user.current_streak ?? 0);
+    } catch {
+      // Giữ giá trị mặc định nếu chưa fetch được
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    fetchUserData();
+
+    const handleStreakUpdated = () => {
+      fetchUserData();
+    };
+
+    window.addEventListener("streak-updated", handleStreakUpdated);
+    return () => {
+      window.removeEventListener("streak-updated", handleStreakUpdated);
+    };
+  }, [fetchUserData]);
 
   return (
     <header className="h-16 px-6 bg-white border-b border-slate-200 flex justify-between items-center z-10 sticky top-0">
@@ -31,7 +57,7 @@ export default function Header() {
         {/* Streak */}
         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-600 rounded-lg text-sm font-semibold select-none">
           <Fire size={16} weight="fill" className="text-orange-500" />
-          <span>7 days</span>
+          <span>{streak} {streak === 1 ? "day" : "days"}</span>
         </div>
 
         {/* Notification */}
