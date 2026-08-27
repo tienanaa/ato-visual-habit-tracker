@@ -4,6 +4,7 @@ import { useDemo } from "../contexts/DemoContext";
 import { getHabits, createHabit, deleteHabit, updateHabit, logHabit, unlogHabit } from "../services/habitService";
 import HabitCard from "../components/habits/HabitCard";
 import HabitFormModal from "../components/habits/HabitFormModal";
+import DashboardStatsRow from "../components/dashboard/DashboardStatsRow";
 import type { Habit } from "../types/habit";
 
 interface PendingDelete {
@@ -173,6 +174,15 @@ export default function DashboardPage() {
         <div className="flex items-center gap-2 px-4 py-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-sm">
           <span className="font-semibold">Error:</span> {error}
         </div>
+      )}
+
+      {/* Habit Summary Stats Row */}
+      {!loading && totalCount > 0 && (
+        <DashboardStatsRow
+          total={totalCount}
+          completed={completedCount}
+          pending={totalCount - completedCount}
+        />
       )}
 
       {/* Today's Progress Card (Flat Design) */}
