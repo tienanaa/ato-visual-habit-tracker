@@ -5,7 +5,10 @@ import { getHabits, createHabit, deleteHabit, updateHabit, logHabit, unlogHabit 
 import HabitCard from "../components/habits/HabitCard";
 import HabitFormModal from "../components/habits/HabitFormModal";
 import DashboardStatsRow from "../components/dashboard/DashboardStatsRow";
+import HabitListFilter from "../components/dashboard/HabitListFilter";
 import type { Habit } from "../types/habit";
+
+type FilterMode = "all" | "pending" | "done";
 
 interface PendingDelete {
   habit: Habit;
@@ -18,6 +21,7 @@ export default function DashboardPage() {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<FilterMode>("all");
 
   // Create modal
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -147,6 +151,13 @@ export default function DashboardPage() {
   const totalCount = habits.length;
   const progressPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
+  // Filtered list
+  const filteredHabits = habits.filter((h) => {
+    if (filter === "done") return h.is_completed_today;
+    if (filter === "pending") return !h.is_completed_today;
+    return true;
+  });
+
   return (
     <div className="max-w-2xl flex flex-col gap-6">
       {/* Page Header */}
@@ -230,18 +241,39 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Filter Tabs */}
+      {!loading && !error && totalCount > 0 && (
+        <HabitListFilter
+          filter={filter}
+          onChange={setFilter}
+          total={totalCount}
+          completed={completedCount}
+        />
+      )}
+
       {/* Habits list */}
       {!loading && !error && totalCount > 0 && (
         <div className="flex flex-col gap-2.5">
-          {habits.map((habit) => (
-            <HabitCard
-              key={habit.id}
-              habit={habit}
-              onDelete={handleDelete}
-              onEdit={handleEditClick}
-              onToggle={handleToggleHabit}
-            />
-          ))}
+          {filteredHabits.length > 0 ? (
+            filteredHabits.map((habit) => (
+              <HabitCard
+                key={habit.id}
+                habit={habit}
+                onDelete={handleDelete}
+                onEdit={handleEditClick}
+                onToggle={handleToggleHabit}
+              />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center py-10 text-center text-slate-400 gap-1.5 border border-dashed border-slate-200 rounded-xl bg-white">
+              <p className="text-sm font-medium text-slate-500">
+                {filter === "done" ? "No habits completed yet today." : "All habits are done for today! 🎉"}
+              </p>
+              <p className="text-xs text-slate-400">
+                {filter === "done" ? "Start checking off your habits." : "Great work keeping up your streak!"}
+              </p>
+            </div>
+          )}
         </div>
       )}
 
