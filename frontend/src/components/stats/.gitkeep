@@ -1,0 +1,10 @@
+// Stats components — các component được thêm dần qua Phase 5.1 → 5.8
+//
+// Phase 5.1 — SummaryCards
+// Phase 5.2 — ActivityHeatmap
+// Phase 5.3 — HabitDonutChart
+// Phase 5.4 — MoodBarChart
+// Phase 5.5 — DailyLineChart
+// Phase 5.6 — InsightCards
+// Phase 5.7 — StreakLeaderboard
+// Phase 5.8 — PeriodSelector, StatsSkeleton

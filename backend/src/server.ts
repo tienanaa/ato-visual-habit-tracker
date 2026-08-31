@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import habitRoutes from "./routes/habit.routes";
 import userRoutes from "./routes/user.routes";
+import statsRoutes from "./routes/stats.routes";
 import { query } from "./config/db";
 
 dotenv.config();
@@ -35,6 +36,7 @@ app.get("/api/health", async (req, res) => {
 // Gắn Routes
 app.use("/api/habits", habitRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/stats", statsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Backend đang chạy http://localhost:${PORT}`);
