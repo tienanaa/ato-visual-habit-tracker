@@ -5,7 +5,7 @@ import MainLayout from "./layouts/MainLayout";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
-import AnalyticsPage from "./pages/StatisticsPage";
+import StatisticsPage from "./pages/StatisticsPage";
 import GalleryPage from "./pages/GalleryPage";
 import ReflectionPage from "./pages/ReflectionPage";
 import AiMentorPage from "./pages/AiMentorPage";
@@ -23,7 +23,7 @@ function App() {
 
           {/* App routes */}
           <Route path="/dashboard" element={<MainLayout><DashboardPage /></MainLayout>} />
-          <Route path="/analytics" element={<MainLayout><AnalyticsPage /></MainLayout>} />
+          <Route path="/statistics" element={<MainLayout><StatisticsPage /></MainLayout>} />
           <Route path="/gallery" element={<MainLayout><GalleryPage /></MainLayout>} />
           <Route path="/reflection" element={<MainLayout><ReflectionPage /></MainLayout>} />
           <Route path="/ai-mentor" element={<MainLayout><AiMentorPage /></MainLayout>} />

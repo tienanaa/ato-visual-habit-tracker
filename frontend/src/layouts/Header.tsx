@@ -6,7 +6,7 @@ import { getUser } from "../services/userService";
 
 const PAGE_TITLES: Record<string, string> = {
   "/dashboard":  "Dashboard",
-  "/analytics":  "Analytics",
+  "/statistics":  "Statistics",
   "/gallery":    "Gallery",
   "/reflection": "Reflection",
   "/ai-mentor":  "AI Mentor",

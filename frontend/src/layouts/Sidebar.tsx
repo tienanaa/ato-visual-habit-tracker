@@ -12,7 +12,7 @@ import styles from "./Sidebar.module.css";
 
 const mainMenuItems = [
   { path: "/dashboard",  label: "Dashboard",  icon: House },
-  { path: "/analytics",  label: "Analytics",  icon: ChartBar },
+  { path: "/statistics",  label: "Statistics",  icon: ChartBar },
   { path: "/gallery",    label: "Gallery",    icon: Image },
   { path: "/reflection", label: "Reflection", icon: ArrowsClockwise },
   { path: "/ai-mentor",  label: "AI Mentor",  icon: Sparkle },
